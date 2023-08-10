@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import { spawn } from 'cross-spawn';
-import { beforeAll, test } from 'vitest';
+import { test } from 'vitest';
 
 import {
   createTestOutputDirectory,
@@ -14,12 +14,11 @@ async function writePackageJson(cwd: string): Promise<void> {
     private: true,
     type: 'module',
     dependencies: {
-      '@types/lodash-es': '4.17.8',
+      // THIS BREAKS VITEST:
       'lodash-es': '4.17.21',
-    },
-    devDependencies: {
-      typescript: '5.1.6',
-      prettier: '3.0.1',
+
+      // THIS DOES NOT:
+      // typescript: '5.1.6',
     },
   };
 
@@ -46,23 +45,11 @@ async function npmInstall(cwd: string): Promise<void> {
   });
 }
 
-async function unpack(cwd: string): Promise<void> {
-  await writePackageJson(cwd);
-  await npmInstall(cwd);
-}
-
-beforeAll(async () => {
-  await createTestOutputRoot();
-});
-
 test('repro case', async () => {
+  await createTestOutputRoot();
+
   const outDir = await createTestOutputDirectory('repro-case');
 
-  await unpack(outDir);
-});
-
-test('repro case 2', async () => {
-  const outDir = await createTestOutputDirectory('repro-case-2');
-
-  await unpack(outDir);
+  await writePackageJson(outDir);
+  await npmInstall(outDir);
 });
