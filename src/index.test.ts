@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 
 import { spawn } from 'cross-spawn';
-import { test } from 'vitest';
+import { beforeAll, test } from 'vitest';
 
 import {
   createTestOutputDirectory,
@@ -47,15 +47,17 @@ async function unpack(cwd: string): Promise<void> {
   await npmInstall(cwd);
 }
 
-test("repro case", async () => {
+beforeAll(async () => {
   await createTestOutputRoot();
+});
+
+test("repro case", async () => {
   const outDir = await createTestOutputDirectory("repro-case");
 
   await unpack(outDir);
 });
 
 test("repro case 2", async () => {
-  await createTestOutputRoot();
   const outDir = await createTestOutputDirectory("repro-case-2");
 
   await unpack(outDir);

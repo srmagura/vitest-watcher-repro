@@ -3,9 +3,7 @@ import path from 'node:path';
 
 import { pathExists } from './pathExists';
 
-const PACKAGE_DIRECTORY = path.resolve(process.cwd(), "..");
-
-const testOutputDir = path.join(PACKAGE_DIRECTORY, "test-output");
+const testOutputDir = path.join(process.cwd(), 'test-output');
 
 export async function createTestOutputRoot(): Promise<void> {
   if (!(await pathExists(testOutputDir))) {
